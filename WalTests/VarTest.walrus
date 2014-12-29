@@ -1,0 +1,8 @@
+var}foo}5}
+print}foo=}{#foo#}
+var}foo}2}
+print}foo=}{#foo#}
+var}bar}0}
+input}bar}Bar value: }
+print}foo+bar=}{#foo#+#bar#}
+stop}

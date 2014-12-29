@@ -1,0 +1,17 @@
+bool}foo}1}
+bool}bar}0}
+bool}baz}0}
+print}foo=}{$foo$}
+print}bar=}{$bar$}
+binput}bar}Bar: }
+binput}baz}Baz: }
+if}{$foo$}
+print}foo}
+endif}
+if}{$bar$}
+print}bar}
+if}{$baz$}
+print}and baz}
+endif}
+endif}
+stop}

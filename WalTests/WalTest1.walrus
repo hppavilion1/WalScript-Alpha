@@ -1,0 +1,27 @@
+var}variable}5}
+
+print}Hello, World!}
+
+print}variable=}{#variable#}
+
+set}variable}Not 5}
+
+print}variable=}{#variable#}
+
+var}foo}7}
+
+var}bar}2}
+
+var}baz}0}
+
+print}foo=}{#foo#}, bar=}{#bar#}, baz=}{#baz#}
+
+print}{#foo#+4}
+
+Comment}debugstop}
+
+set}baz}{7+2}
+
+print}baz=}{#baz#}
+
+stop}
