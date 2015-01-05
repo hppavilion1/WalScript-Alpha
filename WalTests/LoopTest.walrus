@@ -1,6 +1,6 @@
 print}This script should print looping as long as you input "1" every time it asks if you should continue}
 bool}loop}1}
-while}{loop=1}
+while}{$loop$}
 print}Looping}
 binput}loop}Continue?: }
 endwhile}

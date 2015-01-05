@@ -194,6 +194,7 @@ def run(script,r=None):
                     foundEnd = foundEnd+1
                 elif getCommand(i2,script)[0] == 'while':
                     foundEnd = foundEnd-1
+            print i2
             print Args[0]
             if Args[0] == 'b1':
                 print('b1')
@@ -201,7 +202,7 @@ def run(script,r=None):
                 print loopStarts
                 print i
             else:
-                i = i2+1
+                i = i2
 
         elif com == 'endwhile':
             print loopStarts
