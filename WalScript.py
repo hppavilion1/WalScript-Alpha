@@ -194,18 +194,13 @@ def run(script,r=None):
                     foundEnd = foundEnd+1
                 elif getCommand(i2,script)[0] == 'while':
                     foundEnd = foundEnd-1
-            print i2
-            print Args[0]
             if Args[0] == 'b1':
                 print('b1')
                 loopStarts.append(i)
-                print loopStarts
-                print i
             else:
                 i = i2
 
         elif com == 'endwhile':
-            print loopStarts
             i = loopStarts[-1]-1
             loopStarts.pop()
 
