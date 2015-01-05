@@ -3,5 +3,11 @@ bool}loop}1}
 while}{$loop$}
 print}Looping}
 binput}loop}Continue?: }
+bool}loop2}0}
+binput}loop2}meta-loop?: }
+while}{$loop2$}
+print}Meta-looping}
+binput}loop2}meta-loop?: }
+endwhile
 endwhile}
 stop}
