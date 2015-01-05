@@ -2,6 +2,7 @@ import math, sys, Tkinter, tkFileDialog
 root = Tkinter.Tk()
 root.withdraw()
 runtime = []
+loopStarts = []
 out = []
 operations = ['+','-','*','/','^','%']
 boolops = ['=','>','<','>=','<=','!','&','|','$']
@@ -72,7 +73,8 @@ def evalBool(expression):
             exp = 'b1'
         else:
             exp = 'b0'
-    elif evalExp(exp[0:exp.find('!=')]) != evalExp(exp[exp.find('=')+2:len(exp)]):
+    elif '!=' in exp:
+        if evalExp(exp[0:exp.find('!=')]) != evalExp(exp[exp.find('=')+2:len(exp)]):
             exp = 'b1'
         else:
             exp = 'b0'
@@ -97,7 +99,7 @@ def evalBool(expression):
         if all(x == 'b1' for x in expAO):
             exp = 'b1'
     return exp
-    
+
 def getCommand(n,script):
     C = ''
     AC = 0
@@ -184,6 +186,28 @@ def run(script,r=None):
             if not Args[0] == 'b1':
                 i = i2
 
+        elif com == 'while': #Conditional Loop
+            foundEnd = 0
+            while foundEnd < 1:
+                i2 = i2+1
+                if getCommand(i2,script)[0] == 'endwhile':
+                    foundEnd = foundEnd+1
+                elif getCommand(i2,script)[0] == 'while':
+                    foundEnd = foundEnd-1
+            print Args[0]
+            if Args[0] == 'b1':
+                print('b1')
+                loopStarts.append(i)
+                print loopStarts
+                print i
+            else:
+                i = i2+1
+
+        elif com == 'endwhile':
+            print loopStarts
+            i = loopStarts[-1]-1
+            loopStarts.pop()
+
         elif com == 'input': #Set a variable based on input
             o = ''
             if contains(runtime,'var'+Args[0]):
@@ -245,4 +269,5 @@ def openFile(r=None):
         runFile(tkFileDialog.askopenfilename(),r)
 
 ###########################################################################################
-runFile("C:\Users\Nathan\Desktop\Programming\WalrusOS\WalTests\BoolTest.walrus")
+#runFile("C:\Users\Nathan\Desktop\Programming\WalrusOS\WalTests\BoolTest.walrus")
+openFile()

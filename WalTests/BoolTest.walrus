@@ -1,3 +1,4 @@
+print}This script will ask for inputs for Bar and Baz, print "Foo", and if you input 1 for bar print bar and if you input 1 for baz (after 1 for bar) it prints "And baz"}
 bool}foo}1}
 bool}bar}0}
 bool}baz}0}
