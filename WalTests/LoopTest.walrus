@@ -4,3 +4,4 @@ while}{loop=1}
 print}Looping}
 binput}loop}Continue?: }
 endwhile}
+stop}
