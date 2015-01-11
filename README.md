@@ -1,4 +1,4 @@
-WalScript
+﻿WalScript
 =========
 The WalScript interpreter (currently in python)
 
@@ -27,6 +27,10 @@ hold} - just waits for the user to hit enter
 if}bool} - executes all following statemenst down to endif}, provided bool is true
 
 endif} - closes an if statement
+
+while}bool} - Executes all following statements down to endwhile}, as long as bool is true
+
+endwhile} - closes a while loop
 
 stop} - Stops the program
 
