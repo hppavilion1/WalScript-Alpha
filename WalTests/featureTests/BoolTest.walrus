@@ -4,15 +4,15 @@ bool}bar}0}
 bool}baz}0}
 print}foo=}{$foo$}
 print}bar=}{$bar$}
-binput}bar}Bar: }
-binput}baz}Baz: }
+input}bar}Bar: }
+input}baz}Baz: }
 if}{$foo$}
-print}foo}
+	print}foo}
 endif}
 if}{$bar$}
-print}bar}
-if}{$baz$}
-print}and baz}
-endif}
+	print}bar}
+	if}{$baz$}
+		print}and baz}
+	endif}
 endif}
 stop}
