@@ -290,7 +290,6 @@ def runFile(name,r=None):
         program = f.read().splitlines()
         program = [x for x in program if x]
         program = [x.replace('\t','') for x in program]
-        print program
     if r == None:
         run(program)
     else:
