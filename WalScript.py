@@ -10,7 +10,7 @@ scriptIndex = 0
 CustomErrors = []
 ArgOffset = 0
 
-def contains(l, e): #
+def contains(l, e): #find if list l contains element e
     r = 0
     for x in l:
         if x == e:
@@ -138,6 +138,9 @@ def getArg(n,C, raw=False):
         A = evalBool(A[1:])
     return A
 
+def listify(o):
+    return [x for x in o]
+
 def run(script,r=None):
     i = 0
     while getCommand(i,script)[0] != 'stop' and getCommand(i,script)[0] != 'debugsstop':
@@ -215,6 +218,24 @@ def run(script,r=None):
             i = loopStarts[-1]-1
             loopStarts.pop(-1)
 
+        elif com == 'while': #Conditional Loop
+            foundEnd = 0
+            while foundEnd < 1:
+                i2 = i2+1
+                if getCommand(i2,script)[0] == 'endfor':
+                    foundEnd = foundEnd+1
+                elif getCommand(i2,script)[0] == 'for':
+                    foundEnd = foundEnd-1
+            if Args[0] == 'b1':
+                print('b1')
+                loopStarts.append(i)
+            else:
+                i = i2
+
+        elif com == 'endfor':
+            i = loopStarts[-1]-1
+            loopStarts.pop(-1)
+
         elif com == 'input': #Set a variable or boolean based on input
             o = ''
             if contains(runtime,'var'+Args[0]):
@@ -251,7 +272,7 @@ def run(script,r=None):
             for x in range(1, getCommand(i,script)[1]):
                o = o+str(getArg(x,C))
             print(o)
-            print('Runtime:')
+            print('runtime:')
             for x in runtime: print(x)
             print('Arguments:')
             for x in Args: print(x)
@@ -268,6 +289,8 @@ def runFile(name,r=None):
     with open(name) as f:
         program = f.read().splitlines()
         program = [x for x in program if x]
+        program = [x.replace('\t','') for x in program]
+        print program
     if r == None:
         run(program)
     else:
