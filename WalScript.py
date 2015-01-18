@@ -143,7 +143,7 @@ def listify(o):
 
 def run(script,r=None):
     i = 0
-    while getCommand(i,script)[0] != 'stop' and getCommand(i,script)[0] != 'debugsstop':
+    while getCommand(i,script)[0] != 'stop' and getCommand(i,script)[0] != 'debugsstop' and ggetCommand(i,script)[0] != 'passStop':
         C = script[i]
         com = getCommand(i,script)[0]
         Args = []
@@ -209,32 +209,19 @@ def run(script,r=None):
                 elif getCommand(i2,script)[0] == 'while':
                     foundEnd = foundEnd-1
             if Args[0] == 'b1':
-                print('b1')
-                loopStarts.append(i)
+                loopStarts[0].append(i)
             else:
                 i = i2
 
         elif com == 'endwhile':
-            i = loopStarts[-1]-1
-            loopStarts.pop(-1)
+            i = loopStarts[0][-1]-1
+            loopStarts[0].pop(-1)
 
-        elif com == 'while': #Conditional Loop
-            foundEnd = 0
-            while foundEnd < 1:
-                i2 = i2+1
-                if getCommand(i2,script)[0] == 'endfor':
-                    foundEnd = foundEnd+1
-                elif getCommand(i2,script)[0] == 'for':
-                    foundEnd = foundEnd-1
-            if Args[0] == 'b1':
-                print('b1')
-                loopStarts.append(i)
-            else:
-                i = i2
-
+        elif com == 'for': #For Loop
+            pass
+            
         elif com == 'endfor':
-            i = loopStarts[-1]-1
-            loopStarts.pop(-1)
+            pass
 
         elif com == 'input': #Set a variable or boolean based on input
             o = ''
@@ -279,7 +266,6 @@ def run(script,r=None):
             break
         i = i+1
         i2 = i
-        
     if r != None:
         return runtime[runtime.index('var'+r)+1]
     else:

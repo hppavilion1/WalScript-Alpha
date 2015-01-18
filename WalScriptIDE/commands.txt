@@ -1,0 +1,10 @@
+print
+bool
+input
+hold
+if
+endif
+while
+endwhile
+stop
+debugstop
