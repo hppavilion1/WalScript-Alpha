@@ -245,7 +245,7 @@ def run(script,r=None):
             elif contains(runtime,'bool'+Args[0]):
                 for x in range(1, ArgCount):
                     o = o+str(Args[x])
-                runtime[runtime.index('bool'+Args[0])+1] = getArg(0,'c}'+raw_input(o)+'}')
+                runtime[runtime.index('bool'+Args[0])+1] = 'b'+raw_input(o)
             else:
                 scriptError('namespaceNotFound',i)
 
