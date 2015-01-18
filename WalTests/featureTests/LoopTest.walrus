@@ -8,6 +8,6 @@ binput}loop2}meta-loop?: }
 while}{$loop2$}
 print}Meta-looping}
 binput}loop2}meta-loop?: }
-endwhile
+endwhile}
 endwhile}
 stop}
