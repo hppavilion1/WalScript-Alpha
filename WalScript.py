@@ -220,11 +220,11 @@ def run(script,r=None):
             if contains(runtime,'var'+Args[0]):
                 for x in range(1, ArgCount):
                     o = o+str(Args[x])
-                runtime[runtime.index('var'+Args[0])+1] = getArg(0,raw_input(o)+'}')
+                runtime[runtime.index('var'+Args[0])+1] = getArg(0,'c}'+raw_input(o)+'}')
             elif contains(runtime,'bool'+Args[0]):
                 for x in range(1, ArgCount):
                     o = o+str(Args[x])
-                runtime[runtime.index('bool'+Args[0])+1] = getArg(0,raw_input(o)+'}')
+                runtime[runtime.index('bool'+Args[0])+1] = getArg(0,'c}'+raw_input(o)+'}')
             else:
                 scriptError('namespaceNotFound',i)
 
