@@ -18,9 +18,14 @@ def contains(l, e): #
     return r
 
 def scriptError(errorType, line=0):
-    errors = [['DivideByZero','You cannot divide by zero'],['AssertionError','An assertion failed'],['InvalidErrorCode','An invalid error was encountered'],['InvalidBool','A boolean with an invalid value was encountered']]+CustomErrors
-    #if not contains(errors, errorType):
-    #    scriptError('InvalidErrorCode')
+    errors = [['conflictingNamespace','A conflicting namespace was used'],['namespaceNotFound','An undefined namespace was used'],['divideByZero','You cannot divide by zero'],['assertionError','An assertion failed'],['invalidErrorCode','An invalid error was encountered'],['invalidBool','A boolean with an invalid value was encountered']]+CustomErrors
+    validError = False
+    for x in errors:
+        if x[0] == errorType:
+            validError = True
+            break
+    if not validError:
+        scriptError('InvalidErrorCode', line)
     print('WalScript Error: '+errorType+' in line '+str(line))
     sys.exit()
     
@@ -114,7 +119,7 @@ def getCommand(n,script):
         i = i+1
     return [C, AC]
 
-def getArg(n,C):
+def getArg(n,C, raw=False):
     A = ''
     i = 0
     for x in range(n):
@@ -125,6 +130,8 @@ def getArg(n,C):
     while C[i] != '}' and i < len(C):
         i = i+1
     A = C[i2:i]
+    if raw == True:
+        return A
     if A[0] == '{':
         A = evalExp(A[1:])
     elif A[0] == '[':
@@ -148,6 +155,8 @@ def run(script,r=None):
             print(o)
             
         elif com == 'var': #Declare/set Variable
+            if contains(runtime,'bool'+Args[0]):
+                scriptError('conflictingNameSpace',i)
             if contains(runtime,'var'+Args[0]):
                 o = ''
                 for x in range(2, getCommand(i,script)[1]):
@@ -161,6 +170,8 @@ def run(script,r=None):
                 runtime.append(o)
                 
         elif com == 'bool': #Declare/set Boolean
+            if contains(runtime,'var'+Args[0]):
+                scriptError('conflictingNameSpace',i)
             if contains(runtime,'bool'+Args[0]):
                 b = Args[1]
                 if b == 't':
@@ -202,26 +213,30 @@ def run(script,r=None):
 
         elif com == 'endwhile':
             i = loopStarts[-1]-1
-            loopStarts.pop()
+            loopStarts.pop(-1)
 
-        elif com == 'input': #Set a variable based on input
+        elif com == 'input': #Set a variable or boolean based on input
             o = ''
             if contains(runtime,'var'+Args[0]):
                 for x in range(1, ArgCount):
                     o = o+str(Args[x])
-                runtime[runtime.index('var'+Args[0])+1] = raw_input(o)
-            else:
-                print('Error: var '+Args[0]+' not found')
-
-        elif com == 'binput': #Set a boolean based on input
-            o = ''
-            if contains(runtime,'bool'+Args[0]):
+                runtime[runtime.index('var'+Args[0])+1] = getArg(0,raw_input(o)+'}')
+            elif contains(runtime,'bool'+Args[0]):
                 for x in range(1, ArgCount):
                     o = o+str(Args[x])
-                runtime[runtime.index('bool'+Args[0])+1] = 'b'+str(raw_input(o))
+                runtime[runtime.index('bool'+Args[0])+1] = getArg(0,raw_input(o)+'}')
             else:
-                print('Error: bool '+Args[0]+' not found')
-                
+                scriptError('namespaceNotFound',i)
+
+        elif com == 'rinput': #Set a variable based exactly on an input
+            o = ''
+            if contains(runtime,'var'+Args[0]):
+                for x in range(1, ArgCount):
+                    o = o+str(getArg[x])
+                runtime[runtime.index('var'+Args[0])+1] = raw_input(o)
+            else:
+                scriptError('namespaceNotFound',i)
+    
         elif com == 'list': #Make a List
             print('WIP')
             
@@ -261,8 +276,9 @@ def runFile(name,r=None):
 def openFile(r=None):
     if r == None:
         runFile(tkFileDialog.askopenfilename())
+        return None
     else:
-        runFile(tkFileDialog.askopenfilename(),r)
+        return runFile(tkFileDialog.askopenfilename(),r)
 
 ###########################################################################################
 #runFile("C:\Users\Nathan\Desktop\Programming\WalrusOS\WalTests\BoolTest.walrus")
