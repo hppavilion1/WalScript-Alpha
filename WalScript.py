@@ -223,6 +223,24 @@ def run(script,r=None):
         elif com == 'endfor':
             pass
 
+        elif com == 'func':
+            i2 = i
+            runtime.append('func'+C)
+            while getCommand(i2,script)[0] != 'endfunc':
+                i2 = i2+1
+            sub = []
+            for x in range(i,i2):
+                sub.append(script[x])
+            runtime.append(sub)
+            print sub
+            for x in range(ArgCount):
+                if getArg(x,C,True)[0] == '{':
+                    runtime.append('var'+getArg(x,C,True)[2:len(getArg(x,C,True))])
+                    runtime.append('')
+                elif getArg(x,C,True)[0] == '[':
+                    runtime.append('bool'+getArg(x,C,True)[2:len(getArg(x,C,True))])
+                    runtime.append('')
+
         elif com == 'input': #Set a variable or boolean based on input
             o = ''
             if contains(runtime,'var'+Args[0]):
@@ -266,6 +284,16 @@ def run(script,r=None):
             break
         i = i+1
         i2 = i
+
+        elif contains(runtime, 'func'+C):
+            for x in range(ArgCount):
+                if getArg(x,C,True)[0] == '{':
+                    runtime.index('var'+getArg(x,C,True)[2:len(getArg(x,C,True))])
+                    runtime.append('')
+                elif getArg(x,C,True)[0] == '[':
+                    runtime.append('bool'+getArg(x,C,True)[2:len(getArg(x,C,True))])
+                    runtime.append('')
+            
     if r != None:
         return runtime[runtime.index('var'+r)+1]
     else:
