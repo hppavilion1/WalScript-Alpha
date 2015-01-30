@@ -142,16 +142,20 @@ def listify(o):
     return [x for x in o]
 
 def run(script,r=None):
+    global runtime
     i = 0
-    while getCommand(i,script)[0] != 'stop' and getCommand(i,script)[0] != 'debugsstop' and ggetCommand(i,script)[0] != 'passStop':
+    while getCommand(i,script)[0] != 'stop' and getCommand(i,script)[0] != 'debugsstop' and getCommand(i,script)[0] != 'passStop':
         C = script[i]
         com = getCommand(i,script)[0]
         Args = []
         for x in range(1, getCommand(i,script)[1]):
             Args = Args+[getArg(x,C)]
         ArgCount = getCommand(i,script)[1]-1
+
+        if com == 'import':
+            runFile(Args[0])
         
-        if com == 'print': #Print Statement
+        elif com == 'print': #Print Statement
             o = ''
             for x in range(1, getCommand(i,script)[1]):
                o = o+str(getArg(x,C))
@@ -270,6 +274,7 @@ def run(script,r=None):
             raw_input()
             
         elif com == 'stop': #Stops the Script
+            runtime = []
             break
         
         elif com == 'debugstop': #Stops the script, prints a message, and prints the runtime
@@ -281,10 +286,9 @@ def run(script,r=None):
             for x in runtime: print(x)
             print('Arguments:')
             for x in Args: print(x)
+            runtime = []
             break
-        i = i+1
-        i2 = i
-
+        
         elif contains(runtime, 'func'+C):
             for x in range(ArgCount):
                 if getArg(x,C,True)[0] == '{':
@@ -293,6 +297,8 @@ def run(script,r=None):
                 elif getArg(x,C,True)[0] == '[':
                     runtime.append('bool'+getArg(x,C,True)[2:len(getArg(x,C,True))])
                     runtime.append('')
+        i = i+1
+        i2 = i
             
     if r != None:
         return runtime[runtime.index('var'+r)+1]
