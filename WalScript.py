@@ -1,7 +1,6 @@
 import math, sys, Tkinter, tkFileDialog
 root = Tkinter.Tk()
 root.withdraw()
-runtime = []
 loopStarts = []
 out = []
 operations = ['+','-','*','/','^','%']
@@ -29,11 +28,11 @@ def scriptError(errorType, line=0):
     print('WalScript Error: '+errorType+' in line '+str(line))
     sys.exit()
     
-def evalExp(expression):
+def evalExp(expression, runtime):
     i = 0
     exp = expression
     if any(o in exp for o in boolops):
-        exp = evalBool(expression)
+        exp = evalBool(expression, runtime)
     while i < len(exp):
         if exp[i] == '#':
             i2 = i+1
@@ -52,7 +51,7 @@ def evalExp(expression):
         return exp
         
 
-def evalBool(expression):
+def evalBool(expression, runtime):
     i = 0
     exp = expression
     while i < len(exp):
@@ -119,7 +118,7 @@ def getCommand(n,script):
         i = i+1
     return [C, AC]
 
-def getArg(n,C, raw=False):
+def getArg(n,C,runtime, raw=False):
     A = ''
     i = 0
     for x in range(n):
@@ -133,23 +132,23 @@ def getArg(n,C, raw=False):
     if raw == True:
         return A
     if A[0] == '{':
-        A = evalExp(A[1:])
+        A = evalExp(A[1:], runtime)
     elif A[0] == '[':
-        A = evalBool(A[1:])
+        A = evalBool(A[1:], runtime)
     return A
 
 def listify(o):
     return [x for x in o]
 
-def run(script,r=None):
-    global runtime
+def run(script,rt=[],r=None):
+    runtime = rt
     i = 0
     while getCommand(i,script)[0] != 'stop' and getCommand(i,script)[0] != 'debugsstop' and getCommand(i,script)[0] != 'passStop':
         C = script[i]
         com = getCommand(i,script)[0]
         Args = []
         for x in range(1, getCommand(i,script)[1]):
-            Args = Args+[getArg(x,C)]
+            Args = Args+[getArg(x,C,runtime)]
         ArgCount = getCommand(i,script)[1]-1
 
         if com == 'import':
@@ -158,7 +157,7 @@ def run(script,r=None):
         elif com == 'print': #Print Statement
             o = ''
             for x in range(1, getCommand(i,script)[1]):
-               o = o+str(getArg(x,C))
+               o = o+str(getArg(x,C,runtime))
             print(o)
             
         elif com == 'var': #Declare/set Variable
@@ -167,12 +166,12 @@ def run(script,r=None):
             if contains(runtime,'var'+Args[0]):
                 o = ''
                 for x in range(2, getCommand(i,script)[1]):
-                    o = o+str(getArg(x,C))
+                    o = o+str(getArg(x,C,runtime))
                 runtime[runtime.index('var'+Args[0])+1]=o
             else:
                 o = ''
                 for x in range(2, getCommand(i,script)[1]):
-                    o = o+str(getArg(x,C))
+                    o = o+str(getArg(x,C,runtime))
                 runtime.append('var'+Args[0])
                 runtime.append(o)
                 
@@ -229,24 +228,27 @@ def run(script,r=None):
 
         elif com == 'func':
             i2 = i
-            runtime.append('func'+getCommand(i,script)[0])
+            runtime.append('func'+getArg(1,C,runtime))
+            runtime.append(C[5:])
+            fArgs = []
             while getCommand(i2,script)[0] != 'endfunc':
                 i2 = i2+1
+            for x in range(1,ArgCount+1):
+                if getArg(x,C,runtime,True)[0] == '{':
+                    fArgs.append('var'+getArg(x,C,runtime,True)[1:len(getArg(x,C,runtime,True))])
+                elif getArg(x,C,runtime,True)[0] == '[':
+                    fArgs.append('bool'+getArg(x,C,True)[2:len(getArg(x,C,True))])
+            print fArgs
+            runtime.append(fArgs)
             runtime.append(script[i+1:i2])
-            for x in range(ArgCount):
-                if getArg(x,C,True)[0] == '{':
-                    runtime.append('var'+getArg(x,C,True)[2:len(getArg(x,C,True))])
-                    runtime.append('')
-                elif getArg(x,C,True)[0] == '[':
-                    runtime.append('bool'+getArg(x,C,True)[2:len(getArg(x,C,True))])
-                    runtime.append('')
+            i = i2
 
         elif com == 'input': #Set a variable or boolean based on input
             o = ''
             if contains(runtime,'var'+Args[0]):
                 for x in range(1, ArgCount):
                     o = o+str(Args[x])
-                runtime[runtime.index('var'+Args[0])+1] = getArg(0,'c}'+raw_input(o)+'}')
+                runtime[runtime.index('var'+Args[0])+1] = getArg(1,'c}'+raw_input(o)+'}',runtime)
             elif contains(runtime,'bool'+Args[0]):
                 for x in range(1, ArgCount):
                     o = o+str(Args[x])
@@ -258,16 +260,13 @@ def run(script,r=None):
             o = ''
             if contains(runtime,'var'+Args[0]):
                 for x in range(1, ArgCount):
-                    o = o+str(getArg[x])
+                    o = o+str(getArg(x,C,runtime,True))
                 runtime[runtime.index('var'+Args[0])+1] = raw_input(o)
             else:
                 scriptError('namespaceNotFound',i)
     
         elif com == 'list': #Make a List
             print('WIP')
-            
-        elif com == 'hold': #pause until user says something
-            raw_input()
             
         elif com == 'stop': #Stops the Script
             runtime = []
@@ -276,7 +275,7 @@ def run(script,r=None):
         elif com == 'debugstop': #Stops the script, prints a message, and prints the runtime
             o = ''
             for x in range(1, getCommand(i,script)[1]):
-               o = o+str(getArg(x,C))
+               o = o+str(getArg(x,C,runtime))
             print(o)
             print('runtime:')
             for x in runtime: print(x)
@@ -285,22 +284,26 @@ def run(script,r=None):
             runtime = []
             break
         
-        elif contains(runtime, 'func'+C):
-            '''for x in range(ArgCount):
-                if getArg(x,C,True)[0] == '{':
-                    runtime.index('var'+getArg(x,C,True)[2:len(getArg(x,C,True))])
-                    runtime.append('')
-                elif getArg(x,C,True)[0] == '[':
-                    runtime.append('bool'+getArg(x,C,True)[2:len(getArg(x,C,True))])
-                    runtime.append('')'''
-            run(runtime[runtime.index('func'+C)+1])
+        elif contains(runtime, 'func'+getCommand(i,script)[0]):
+            rti = runtime.index('func'+getCommand(i,script)[0])
+            fArgs = []
+            print 'ArgCount='+str(ArgCount)
+            print 'fArgs='+str(runtime[rti+2])
+            for x in range(ArgCount):
+                fArgs.append(runtime[rti+2][x])
+                fArgs.append(getArg(x+1,C,runtime))
+            print 'runtime='+str(runtime+fArgs)
+            runtime = run(runtime[rti+3], runtime+fArgs, 'runtime')
         i = i+1
         i2 = i
             
     if r != None:
-        return runtime[runtime.index('var'+r)+1]
+        if r == 'runtime':
+            return runtime
+        else:
+            return runtime[runtime.index('var'+r)+1]
     else:
-        return ''
+        return None
 
 def runFile(name,r=None):
     with open(name) as f:
@@ -310,7 +313,7 @@ def runFile(name,r=None):
     if r == None:
         run(program)
     else:
-        return run(program,r)
+        return run(program,[],r)
 
 def openFile(r=None):
     if r == None:
