@@ -229,14 +229,10 @@ def run(script,r=None):
 
         elif com == 'func':
             i2 = i
-            runtime.append('func'+C)
+            runtime.append('func'+getCommand(i,script)[0])
             while getCommand(i2,script)[0] != 'endfunc':
                 i2 = i2+1
-            sub = []
-            for x in range(i,i2):
-                sub.append(script[x])
-            runtime.append(sub)
-            print sub
+            runtime.append(script[i+1:i2])
             for x in range(ArgCount):
                 if getArg(x,C,True)[0] == '{':
                     runtime.append('var'+getArg(x,C,True)[2:len(getArg(x,C,True))])
@@ -290,13 +286,14 @@ def run(script,r=None):
             break
         
         elif contains(runtime, 'func'+C):
-            for x in range(ArgCount):
+            '''for x in range(ArgCount):
                 if getArg(x,C,True)[0] == '{':
                     runtime.index('var'+getArg(x,C,True)[2:len(getArg(x,C,True))])
                     runtime.append('')
                 elif getArg(x,C,True)[0] == '[':
                     runtime.append('bool'+getArg(x,C,True)[2:len(getArg(x,C,True))])
-                    runtime.append('')
+                    runtime.append('')'''
+            run(runtime[runtime.index('func'+C)+1])
         i = i+1
         i2 = i
             

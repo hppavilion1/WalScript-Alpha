@@ -5,6 +5,7 @@ print}Happy birthday dear}{#name#}
 print}Happy birthday to you}
 stop}
 endfunc}
+
 var}foo}0}
 input}foo}Name: }
 birthday}{#foo#}
