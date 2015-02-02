@@ -16,6 +16,7 @@ command}arg}arg}arg}
 Commands:
 ---------
 ```
+import}filename.walrus}      # Imports filename from your libraries, adding all functions, variables, etc. to your runtime and running it. 
 print}message}…}message}     # Print message
 var}name}value}              # Declare or set variable name to value
 bool}name}value}             # Declares or sets a boolean to value (value can be 1,0,or t. t toggles the boolean.)

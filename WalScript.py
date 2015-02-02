@@ -5,10 +5,12 @@ loopStarts = []
 out = []
 operations = ['+','-','*','/','^','%']
 boolops = ['=','>','<','>=','<=','!','&','|','$']
+expcommands = ['join','char']
 scriptIndex = 0
 CustomErrors = []
 ArgOffset = 0
 order = '^*/%+-'
+ret = ''
 
 def contains(l, e): #find if list l contains element e
     r = 0
@@ -16,6 +18,13 @@ def contains(l, e): #find if list l contains element e
         if x == e:
             r = 1
     return r
+
+def find_nth(haystack, needle, n):
+    start = haystack.find(needle)
+    while start >= 0 and n > 1:
+        start = haystack.find(needle, start+len(needle))
+        n -= 1
+    return start
 
 def scriptError(errorType, line=0):
     errors = [['conflictingNamespace','A conflicting namespace was used'],['namespaceNotFound','An undefined namespace was used'],['divideByZero','You cannot divide by zero'],['assertionError','An assertion failed'],['invalidErrorCode','An invalid error was encountered'],['invalidBool','A boolean with an invalid value was encountered']]+CustomErrors
@@ -43,6 +52,37 @@ def evalExp(expression, runtime):
             exp = exp[:i]+runtime[runtime.index('var'+exp[i+1:i2])+1]+exp[i2+1:]
             i = -1
         i = i+1
+
+    while any(s in exp for s in expcommands):
+        if 'join' in exp:
+            spos = exp.find('join')+5
+            epos = spos
+            fend = 0
+            splitpos = []
+            while fend < 1:
+                epos = epos+1
+                if exp[epos] == ')':
+                    fend = fend+1
+                elif exp[epos] == '(':
+                    fend = fend-1
+                elif exp[epos] == ',' and fend == 0:
+                    splitpos = epos
+            exp = exp[:spos-5]+exp[spos:splitpos]+exp[splitpos+1:epos]+exp[epos+1:]
+        if 'char' in exp:
+            spos = exp.find('char')+5
+            epos = spos
+            fend = 0
+            splitpos = []
+            while fend < 1:
+                epos = epos+1
+                if exp[epos] == ')':
+                    fend = fend+1
+                elif exp[epos] == '(':
+                    fend = fend-1
+                elif exp[epos] == ',' and fend == 0:
+                    splitpos = epos
+            exp = exp[:spos-5]+exp[splitpos+1:epos][int(exp[spos:splitpos])]+exp[epos+1:]
+
     ns = vars(math).copy()
     ns['__builtins__'] = None
     exp = exp.replace('^','**')
@@ -50,6 +90,9 @@ def evalExp(expression, runtime):
         return eval(exp,ns)
     except NameError:
         return exp
+    except SyntaxError:
+        return exp
+    
     ex=[exp]
     for x in order:
         for y in ex:
@@ -304,6 +347,8 @@ def run(script,rt=[],r=None):
     if r != None:
         if r == 'runtime':
             return runtime
+        elif r == 'ret':
+            return ret
         else:
             return runtime[runtime.index('var'+r)+1]
     else:
@@ -328,5 +373,5 @@ def openFile(r=None):
 
 ###########################################################################################
 #runFile("C:\Users\Nathan\Desktop\Programming\WalrusOS\WalTests\BoolTest.walrus")
-#openFile()
-run(['print}{5+2/3*9}','debugstop}'])
+openFile()
+#run(['print}{5+2/3*9}','debugstop}'])
