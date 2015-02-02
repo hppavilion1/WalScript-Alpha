@@ -1,5 +1,18 @@
-var}pi}3.141592653589793}
-var}e}2.718281828459045}
-var}phi}1.618033988749894}
-var}sqrt2}1.414213562373095}
+var}pi}3.1415926}
+var}e}2.7182818}
+var}phi}1.6180339}
+
+func}sine}{x}
+	var}x}{#x#/180}
+	print}{#x#/180}
+	var}x}{#x#*#pi#}
+	print}radiansx=}{#x#}
+	var}x}{#x#-#x#^3/3}
+	var}x}{#x#+#x#^5/5}
+	var}x}{#x#-#x#^7/7}
+	print}{#x#}
+	passStop}
+endfunc}
+
+sine}45}
 passStop}

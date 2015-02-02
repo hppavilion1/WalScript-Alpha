@@ -8,6 +8,7 @@ boolops = ['=','>','<','>=','<=','!','&','|','$']
 scriptIndex = 0
 CustomErrors = []
 ArgOffset = 0
+order = '^*/%+-'
 
 def contains(l, e): #find if list l contains element e
     r = 0
@@ -49,7 +50,13 @@ def evalExp(expression, runtime):
         return eval(exp,ns)
     except NameError:
         return exp
-        
+    ex=[exp]
+    for x in order:
+        for y in ex:
+            ex[y] = ex[y].split(x)
+            #ex[y].insert(1, x)
+    print ex
+            
 
 def evalBool(expression, runtime):
     i = 0
@@ -287,12 +294,9 @@ def run(script,rt=[],r=None):
         elif contains(runtime, 'func'+getCommand(i,script)[0]):
             rti = runtime.index('func'+getCommand(i,script)[0])
             fArgs = []
-            print 'ArgCount='+str(ArgCount)
-            print 'fArgs='+str(runtime[rti+2])
             for x in range(ArgCount):
                 fArgs.append(runtime[rti+2][x])
                 fArgs.append(getArg(x+1,C,runtime))
-            print 'runtime='+str(runtime+fArgs)
             runtime = run(runtime[rti+3], runtime+fArgs, 'runtime')
         i = i+1
         i2 = i
@@ -324,4 +328,5 @@ def openFile(r=None):
 
 ###########################################################################################
 #runFile("C:\Users\Nathan\Desktop\Programming\WalrusOS\WalTests\BoolTest.walrus")
-openFile()
+#openFile()
+run(['print}{5+2/3*9}','debugstop}'])
