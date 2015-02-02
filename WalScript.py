@@ -10,7 +10,6 @@ scriptIndex = 0
 CustomErrors = []
 ArgOffset = 0
 order = '^*/%+-'
-ret = ''
 
 def contains(l, e): #find if list l contains element e
     r = 0
@@ -68,7 +67,7 @@ def evalExp(expression, runtime):
                 elif exp[epos] == ',' and fend == 0:
                     splitpos = epos
             exp = exp[:spos-5]+exp[spos:splitpos]+exp[splitpos+1:epos]+exp[epos+1:]
-        if 'char' in exp:
+        elif 'char' in exp:
             spos = exp.find('char')+5
             epos = spos
             fend = 0
@@ -82,6 +81,7 @@ def evalExp(expression, runtime):
                 elif exp[epos] == ',' and fend == 0:
                     splitpos = epos
             exp = exp[:spos-5]+exp[splitpos+1:epos][int(exp[spos:splitpos])]+exp[epos+1:]
+        #...
 
     ns = vars(math).copy()
     ns['__builtins__'] = None
@@ -191,9 +191,10 @@ def listify(o):
     return [x for x in o]
 
 def run(script,rt=[],r=None):
+    ret = ''
     runtime = rt
     i = 0
-    while getCommand(i,script)[0] != 'stop' and getCommand(i,script)[0] != 'debugsstop' and getCommand(i,script)[0] != 'passStop':
+    while getCommand(i,script)[0] != 'stop' and getCommand(i,script)[0] != 'debugsstop' and getCommand(i,script)[0] != 'passStop' and i != len(script):
         C = script[i]
         com = getCommand(i,script)[0]
         Args = []
@@ -292,6 +293,26 @@ def run(script,rt=[],r=None):
             runtime.append(fArgs)
             runtime.append(script[i+1:i2])
             i = i2
+            
+        elif com == 'expfunc':
+            i2 = i
+            runtime.append('expfunc'+getArg(1,C,runtime))
+            runtime.append(C[5:])
+            fArgs = []
+            while getCommand(i2,script)[0] != 'endexpfunc':
+                i2 = i2+1
+            for x in range(1,ArgCount+1):
+                if getArg(x,C,runtime,True)[0] == '{':
+                    fArgs.append('var'+getArg(x,C,runtime,True)[1:len(getArg(x,C,runtime,True))])
+                elif getArg(x,C,runtime,True)[0] == '[':
+                    fArgs.append('bool'+getArg(x,C,True)[2:len(getArg(x,C,True))])
+            print fArgs
+            runtime.append(fArgs)
+            runtime.append(script[i+1:i2])
+            i = i2
+
+        elif com == 'endexpfunc':
+            ret = getArg(1,C,True)
 
         elif com == 'input': #Set a variable or boolean based on input
             o = ''
