@@ -5,5 +5,8 @@ Purpose
 To test any WalScript implementation for bugs
 Types
 -----
-Feature: To test individual features of the language 
+Feature: To test individual features of the language
+
 Implementation: To test various programs in the language
+
+Error: intentionally flawed programs to test that errors work
