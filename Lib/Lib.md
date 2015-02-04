@@ -4,14 +4,17 @@ Math.walrus
 Constants
 ---------
 ```
-#pi#
-#e#
-#phi#
+pi
+e
+phi
 ```
 Functions
 ---------
 ```
 abs(x) //Get the absolute value of x
+round(x) //round x
+ceil(x) //nearest integer greater than x
+floor(x) //nearest integer less than x
 sqrt(x) //Square root of x
 root(x, y) //xth root of y
 sin(x) //Sine of x
