@@ -11,7 +11,9 @@ Constants
 Functions
 ---------
 ```
+abs(x) //Get the absolute value of x
 sqrt(x) //Square root of x
+root(x, y) //xth root of y
 sin(x) //Sine of x
 cos(x) //Cosine of x
 tan(x) //Tangent of x
