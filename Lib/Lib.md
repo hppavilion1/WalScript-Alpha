@@ -29,3 +29,8 @@ atan(x) //Tangent^-1 of x
 String.walrus
 =============
 A set of string manipulation and examination functions
+String Manipulation:
+--------------------
+```
+sub(b, e, s) //get substring b-e of s
+```
