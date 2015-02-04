@@ -8,6 +8,15 @@ Constants
 #e#
 #phi#
 ```
+Functions
+---------
 ```
+sqrt(x) //Square root of x
+sin(x) //Sine of x
+cos(x) //Cosine of x
+tan(x) //Tangent of x
+asin(x) //Sine^-1 of x
+acos(x) //Cosine^-1 of x
+atan(x) //Tangent^-1 of x
 
 ```
