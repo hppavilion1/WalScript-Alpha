@@ -1,6 +1,7 @@
 This file is to provide vital information about the libraries that come with WalScript
 Math.walrus
 ===========
+A set of usefule mathematical functions, constants, and things
 Constants
 ---------
 ```
@@ -23,5 +24,8 @@ tan(x) //Tangent of x
 asin(x) //Sine^-1 of x
 acos(x) //Cosine^-1 of x
 atan(x) //Tangent^-1 of x
-
 ```
+
+String.walrus
+=============
+A set of string manipulation and examination functions
