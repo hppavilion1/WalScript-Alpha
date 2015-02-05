@@ -9,6 +9,7 @@ pi
 e
 phi
 ```
+(ALLTHINGS BELOW THIS POINT NOT YET IMPLEMENTED)
 Functions
 ---------
 ```
