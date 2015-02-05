@@ -30,8 +30,20 @@ atan(x) //Tangent^-1 of x
 String.walrus
 =============
 A set of string manipulation and examination functions
+Constants:
+----------
+```
+low      //lower case alphabet
+caps     //upper case alphabet
+Letters  //low+caps
+digits   //Numbers
+Alphanum //Letters+digits
+ascii    //ASCII
+```
 String Manipulation:
 --------------------
 ```
+upper(s)     //Full caps of s
+lower(s)     //Lower case of s
 sub(b, e, s) //get substring b-e of s
 ```
