@@ -82,6 +82,7 @@ def evalExp(expression, runtime):
                     splitpos = epos
             exp = exp[:spos-5]+exp[splitpos+1:epos][int(exp[spos:splitpos])]+exp[epos+1:]
         #...
+        while any(s in exp for s in expcommands):
 
     ns = vars(math).copy()
     ns['__builtins__'] = None
