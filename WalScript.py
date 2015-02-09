@@ -394,6 +394,10 @@ def openFile(r=None):
         return runFile(tkFileDialog.askopenfilename(),r)
 
 ###########################################################################################
-#runFile("C:\Users\Nathan\Desktop\Programming\WalrusOS\WalTests\BoolTest.walrus")
-openFile()
-#run(['print}{5+2/3*9}','debugstop}'])
+mode = raw_input('Mode: ')
+if mode == 'open':
+    openFile()
+elif mode == 'testfile':
+    runFile("C:\Users\Nathan\Desktop\Programming\WalrusOS\WalTests\BoolTest.walrus")
+elif mode == 'builtintest':
+    run(['print}{5+2/3*9}','debugstop}'])
