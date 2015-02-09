@@ -1,4 +1,4 @@
-import math, sys, Tkinter, tkFileDialog
+import math, sys, Tkinter, tkFileDialog, regexp
 root = Tkinter.Tk()
 root.withdraw()
 loopStarts = []
@@ -47,27 +47,12 @@ def evalExp(expression, runtime):
             i2 = i+1
             while exp[i2] != '#' and i2 < len(exp):
                 i2 = i2+1
-            #i2 = i2+1
             exp = exp[:i]+runtime[runtime.index('var'+exp[i+1:i2])+1]+exp[i2+1:]
             i = -1
         i = i+1
 
     while any(s in exp for s in expcommands):
-        if 'join' in exp:
-            spos = exp.find('join')+5
-            epos = spos
-            fend = 0
-            splitpos = []
-            while fend < 1:
-                epos = epos+1
-                if exp[epos] == ')':
-                    fend = fend+1
-                elif exp[epos] == '(':
-                    fend = fend-1
-                elif exp[epos] == ',' and fend == 0:
-                    splitpos = epos
-            exp = exp[:spos-5]+exp[spos:splitpos]+exp[splitpos+1:epos]+exp[epos+1:]
-        elif 'char' in exp:
+        if 'char' in exp:
             spos = exp.find('char')+5
             epos = spos
             fend = 0
@@ -81,9 +66,7 @@ def evalExp(expression, runtime):
                 elif exp[epos] == ',' and fend == 0:
                     splitpos = epos
             exp = exp[:spos-5]+exp[splitpos+1:epos][int(exp[spos:splitpos])]+exp[epos+1:]
-        #...
-        while any(s in exp for s in expcommands):
-
+        
     ns = vars(math).copy()
     ns['__builtins__'] = None
     exp = exp.replace('^','**')
