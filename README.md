@@ -57,9 +57,14 @@ print}{$y$|$z$}              // prints b1, as either y or z is true (supports bo
 
 Editor Settings:
 ----------------
+(AS OF YET NOT IMPLEMENTED)
 Editor settings are a way to configure how the interpreter will work. The are prefixed by an octothorpe and are formatted as setting:value.
 Default is value is shown.
 ```
 #oops:^*/%+-
 ```
 Defines the order of operations. Parenthesis ALWAYS come first. Shown is PEMDAS (with modulus.)
+```
+#boops:?
+```
+Defines the order of operations for booleans. Again, parenthesis.
