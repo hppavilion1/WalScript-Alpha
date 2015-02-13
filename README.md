@@ -61,14 +61,14 @@ Editor Settings:
 Editor settings are a way to configure how the interpreter will work. The are prefixed by an octothorpe and are formatted as setting:value.
 Default is value is shown.
 ```
-#oops:^*/%+-
+#oops:^,*,/,%,+-
 ```
 Defines the order of operations. Parenthesis ALWAYS come first. Shown is PEMDAS (with modulus.)
 ```
-#coops:?
+#coops:=,!=,>,<,>=,<=
 ```
-Defines the order of operations for comparisons (=, !=, >, <, >=, <=). Again, parenthesis.
+Defines the order of operations for comparisons. Again, parenthesis.
 ```
 #boops:!,and,or,xor
 ```
-order of operations for bitwise operators
+Order of operations for bitwise operators. Parens.
