@@ -65,6 +65,10 @@ Default is value is shown.
 ```
 Defines the order of operations. Parenthesis ALWAYS come first. Shown is PEMDAS (with modulus.)
 ```
-#boops:?
+#coops:?
 ```
-Defines the order of operations for booleans. Again, parenthesis.
+Defines the order of operations for comparisons (=, !=, >, <, >=, <=). Again, parenthesis.
+```
+#boops:!,and,or,xor
+```
+order of operations for bitwise operators
