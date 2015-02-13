@@ -1,6 +1,8 @@
 This file is to provide vital information about the libraries that come with WalScript
-Math.walrus
-===========
+
+There are two types of libraries: *.walrus and *.wp (walpy). *.walrus libraries are written in WalScript, whereas *.wp is written in a mix between WalScript and Python.
+Math.wp
+=======
 A set of usefule mathematical functions, constants, and things
 Constants
 ---------
@@ -9,7 +11,7 @@ pi
 e
 phi
 ```
-(ALLTHINGS BELOW THIS POINT NOT YET IMPLEMENTED)
+(ALL THINGS BELOW THIS POINT NOT YET IMPLEMENTED)
 Functions
 ---------
 ```
