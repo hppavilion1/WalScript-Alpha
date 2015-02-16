@@ -1,4 +1,21 @@
 import math, sys, Tkinter, tkFileDialog, regexp
+commands = {
+    'import':'import',
+    'print':'print',
+    'var':'var',
+    'bool':'bool',
+    'input':'input',
+    'rinput':'rinput',
+    'hold':'hold',
+    'if':'if',
+    'endif':'endif'
+    'while':'while',
+    'endwhile':'endwhile',
+    'func':'func',
+    'endfunc':'endfunc',
+    'stop':'stop',
+    'debugstop':'debugstop'
+    }
 root = Tkinter.Tk()
 root.withdraw()
 loopStarts = []
@@ -18,15 +35,15 @@ def contains(l, e): #find if list l contains element e
             r = 1
     return r
 
-def find_nth(haystack, needle, n):
+def find_nth(haystack, needle, n): #Find the nth occurence of needle in haystack
     start = haystack.find(needle)
     while start >= 0 and n > 1:
         start = haystack.find(needle, start+len(needle))
         n -= 1
     return start
 
-def scriptError(errorType, line=0):
-    errors = [['conflictingNamespace','A conflicting namespace was used'],['namespaceNotFound','An undefined namespace was used'],['divideByZero','You cannot divide by zero'],['assertionError','An assertion failed'],['invalidErrorCode','An invalid error was encountered'],['invalidBool','A boolean with an invalid value was encountered']]+CustomErrors
+def scriptError(errorType, line=0): #Handle errors in the script
+    errors = [['conflictingNamespace','A conflicting namespace was used'],['namespaceNotFound','An undefined namespace was used'],['divideByZero','You cannot divide by zero'],['assertionError','An assertion failed'],['invalidErrorCode','An invalid error was encountered'],['invalidBool','A boolean with an invalid value was encountered']]+CustomErrors #Script errors
     validError = False
     for x in errors:
         if x[0] == errorType:
@@ -37,7 +54,7 @@ def scriptError(errorType, line=0):
     print('WalScript Error: '+errorType+' in line '+str(line))
     sys.exit()
     
-def evalExp(expression, runtime):
+def evalExp(expression, runtime): #Evaluate expressions
     i = 0
     exp = expression
     if any(o in exp for o in boolops):
@@ -66,7 +83,9 @@ def evalExp(expression, runtime):
                 elif exp[epos] == ',' and fend == 0:
                     splitpos = epos
             exp = exp[:spos-5]+exp[splitpos+1:epos][int(exp[spos:splitpos])]+exp[epos+1:]
-        
+        else:
+            pass #This will be the custom functions with return variables
+
     ns = vars(math).copy()
     ns['__builtins__'] = None
     exp = exp.replace('^','**')
@@ -108,34 +127,34 @@ def evalBool(expression, runtime):
             scriptError('InvalidBool',0)
     if '=' in exp:
         if evalExp(exp[0:exp.find('=')]) == evalExp(exp[exp.find('=')+1:len(exp)]):
-            exp = 'b1'
+            exp = '1'
         else:
-            exp = 'b0'
+            exp = '0'
     elif '!=' in exp:
         if evalExp(exp[0:exp.find('!=')]) != evalExp(exp[exp.find('=')+2:len(exp)]):
-            exp = 'b1'
+            exp = '1'
         else:
-            exp = 'b0'
+            exp = '0'
     elif '>' in exp:
         if evalExp(exp[0:exp.find('>')]) > evalExp(exp[exp.find('>')+1:len(exp)]):
-            exp = 'b1'
+            exp = '1'
         else:
-            exp = 'b0'
+            exp = '0'
     elif '<' in exp:
         if evalExp(exp[0:exp.find('<')]) < evalExp(exp[exp.find('<')+1:len(exp)]):
-            exp = 'b1'
+            exp = '1'
         else:
-            exp = 'b0'
+            exp = '0'
             
     if '|' in exp or '&' in exp:
         expAO = exp.split('&')
         for x in len(expAO):
             expAO[x] = expAO[x].split('|')
         for x in len(expAO):
-            if any(y in expAO[x] for y in ['b1']):
-                expAO[x] = 'b1'
-        if all(x == 'b1' for x in expAO):
-            exp = 'b1'
+            if any(y in expAO[x] for y in ['1']):
+                expAO[x] = '1'
+        if all(x == '1' for x in expAO):
+            exp = '1'
     return exp
 
 def getCommand(n,script):
@@ -186,17 +205,17 @@ def run(script,rt=[],r=None):
             Args = Args+[getArg(x,C,runtime)]
         ArgCount = getCommand(i,script)[1]-1
 
-        if com == 'import':
+        if com == commands['import']:
             runFile(Args[0])
         
-        elif com == 'print': #Print Statement
+        elif com == commands['print']: #Print Statement
             o = ''
             for x in range(1, getCommand(i,script)[1]):
                o = o+str(getArg(x,C,runtime))
             print(o)
             
-        elif com == 'var': #Declare/set Variable
-            if contains(runtime,'bool'+Args[0]):
+        elif com == commands['var']: #Declare/set Variable
+            if contains(runtime,'boo'+Args[0]):
                 scriptError('conflictingNameSpace',i)
             if contains(runtime,'var'+Args[0]):
                 o = ''
@@ -213,17 +232,17 @@ def run(script,rt=[],r=None):
         elif com == 'bool': #Declare/set Boolean
             if contains(runtime,'var'+Args[0]):
                 scriptError('conflictingNameSpace',i)
-            if contains(runtime,'bool'+Args[0]):
+            if contains(runtime,'boo'+Args[0]):
                 b = Args[1]
                 if b == 't':
-                    if b == 'b1':
-                        b = 'b0'
+                    if b == '1':
+                        b = '0'
                     else:
-                        b = 'b1'
-                runtime[runtime.index('bool'+Args[0])+1]=str(b)
+                        b = '1'
+                runtime[runtime.index('boo'+Args[0])+1]=str(b)
             elif Args[1] == '1' or Args[1] == '0':
-                runtime.append('bool'+Args[0])
-                runtime.append('b'+str(Args[1]))
+                runtime.append('boo'+Args[0])
+                runtime.append(str(Args[1]))
             else:
                 scriptError('InvalidBool',i)
 
@@ -235,7 +254,7 @@ def run(script,rt=[],r=None):
                     foundEnd = foundEnd+1
                 elif getCommand(i2,script)[0] == 'if':
                     foundEnd = foundEnd-1
-            if not Args[0] == 'b1':
+            if not Args[0] == '1':
                 i = i2
 
         elif com == 'while': #Conditional Loop
@@ -246,7 +265,7 @@ def run(script,rt=[],r=None):
                     foundEnd = foundEnd+1
                 elif getCommand(i2,script)[0] == 'while':
                     foundEnd = foundEnd-1
-            if Args[0] == 'b1':
+            if Args[0] == '1':
                 loopStarts[0].append(i)
             else:
                 i = i2
@@ -272,7 +291,7 @@ def run(script,rt=[],r=None):
                 if getArg(x,C,runtime,True)[0] == '{':
                     fArgs.append('var'+getArg(x,C,runtime,True)[1:len(getArg(x,C,runtime,True))])
                 elif getArg(x,C,runtime,True)[0] == '[':
-                    fArgs.append('bool'+getArg(x,C,True)[2:len(getArg(x,C,True))])
+                    fArgs.append('boo'+getArg(x,C,True)[2:len(getArg(x,C,True))])
             print fArgs
             runtime.append(fArgs)
             runtime.append(script[i+1:i2])
@@ -289,7 +308,7 @@ def run(script,rt=[],r=None):
                 if getArg(x,C,runtime,True)[0] == '{':
                     fArgs.append('var'+getArg(x,C,runtime,True)[1:len(getArg(x,C,runtime,True))])
                 elif getArg(x,C,runtime,True)[0] == '[':
-                    fArgs.append('bool'+getArg(x,C,True)[2:len(getArg(x,C,True))])
+                    fArgs.append('boo'+getArg(x,C,True)[2:len(getArg(x,C,True))])
             print fArgs
             runtime.append(fArgs)
             runtime.append(script[i+1:i2])
@@ -304,10 +323,10 @@ def run(script,rt=[],r=None):
                 for x in range(1, ArgCount):
                     o = o+str(Args[x])
                 runtime[runtime.index('var'+Args[0])+1] = getArg(1,'c}'+raw_input(o)+'}',runtime)
-            elif contains(runtime,'bool'+Args[0]):
+            elif contains(runtime,'boo'+Args[0]):
                 for x in range(1, ArgCount):
                     o = o+str(Args[x])
-                runtime[runtime.index('bool'+Args[0])+1] = 'b'+raw_input(o)
+                runtime[runtime.index('boo'+Args[0])+1] = raw_input(o)
             else:
                 scriptError('namespaceNotFound',i)
 
