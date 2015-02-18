@@ -72,3 +72,7 @@ Defines the order of operations for comparisons. Again, parenthesis.
 #boops:!,and,or,xor
 ```
 Order of operations for bitwise operators. Parens.
+```
+#moops:b,o,c
+```
+Order in which oops, coops, and boops are evaluated
