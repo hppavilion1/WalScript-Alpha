@@ -54,7 +54,17 @@ print}{#w#>#x#}              // prints b1, as 5 is greater than 7 (supports vari
 print}{$y$&$z$}              // prints b1, as both y and z are true (supports booleans)
 print}{$y$|$z$}              // prints b1, as either y or z is true (supports booleans)
 ```
-
+Classes (TBI):
+--------------
+```
+class}name                  // Create a class
+endclass}                   // End a class
+name.func}                  // A class function
+self                        // This instance
+func}onstart}
+endfunc}
+name.localvar
+```
 Editor Settings:
 ----------------
 (AS OF YET NOT IMPLEMENTED)
