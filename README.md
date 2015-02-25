@@ -22,7 +22,7 @@ var}name}value}              // Declare or set variable name to value
 bool}name}value}             // Declares or sets a boolean to value (value can be 1,0,or t. t toggles the boolean.)
 input}name}message}          // Get input from prompt message and set variable or bool name to evaluated response
 rinput}var}message}          // Get input from prompt message and set var to unevaluated response (based on python's raw_input()
-hold}                        // Just waits for the user to hit enter
+hold}                        // Just waits for the user to hit enter-
 if}bool}                     // Executes all following statemenst down to endif}, provided bool is true
 endif}                       // Closes an if statement
 while}bool}                  // Executes all following statements down to endwhile}, as long as bool is true
@@ -60,9 +60,9 @@ Classes (TBI):
 class}name                  // Create a class
 endclass}                   // End a class
 name.func}                  // A class function
-self                        // This instance
+self.func}/localvar         // This instance/class
 func}onstart}
-endfunc}
+endfunc}                    // Runs upon initiation
 name.localvar
 ```
 Editor Settings:
