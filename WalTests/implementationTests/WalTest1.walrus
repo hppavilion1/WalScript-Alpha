@@ -1,27 +1,27 @@
-var}variable}5}
+var}variable}5};
 
-print}Hello, World!}
+print}Hello, World!};
 
-print}variable=}{#variable#}
+print}variable=}{#variable#};
 
-set}variable}Not 5}
+set}variable}Not 5};
 
-print}variable=}{#variable#}
+print}variable=}{#variable#};
 
-var}foo}7}
+var}foo}7};
 
-var}bar}2}
+var}bar}2};
 
-var}baz}0}
+var}baz}0};
 
-print}foo=}{#foo#}, bar=}{#bar#}, baz=}{#baz#}
+print}foo=}{#foo#}, bar=}{#bar#}, baz=}{#baz#};
 
-print}{#foo#+4}
+print}{#foo#+4};
 
-Comment}debugstop}
+Comment}debugstop};
 
-set}baz}{7+2}
+set}baz}{7+2};
 
-print}baz=}{#baz#}
+print}baz=}{#baz#};
 
-stop}
+stop};

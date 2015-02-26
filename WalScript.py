@@ -1,28 +1,39 @@
-import math, sys, Tkinter, tkFileDialog, regexp
+import math, sys, Tkinter, tkFileDialog, re
 commands = {
-    'import':'import',
-    'print':'print',
-    'var':'var',
-    'bool':'bool',
-    'input':'input',
-    'rinput':'rinput',
-    'hold':'hold',
-    'if':'if',
-    'endif':'endif'
-    'while':'while',
-    'endwhile':'endwhile',
-    'func':'func',
-    'endfunc':'endfunc',
-    'stop':'stop',
-    'debugstop':'debugstop'
+    'IMPORT':'import',
+    'PRINT':'print',
+    'VAR':'var',
+    'BOOL':'bool',
+    'INPUT':'input',
+    'RINPUT':'rinput',
+    'HOLD':'hold',
+    'IF':'if',
+    'ENDIF':'endif',
+    'WHILE':'while',
+    'ENDWHILE':'endwhile',
+    'FUNCTION':'func',
+    'ENDFUNCTION':'endfunc',
+    'STOP':'stop',
+    'DEBUGSTOP':'debugstop'
+    }
+spchars = {
+    'SEP':'}',
+    'OP':'{',
+    'ALTOP':'['
     }
 root = Tkinter.Tk()
 root.withdraw()
 loopStarts = []
 out = []
-operations = ['+','-','*','/','^','%']
+operations = {
+    'PLUS':'+',
+    'MINUS':'-',
+    'MULTIPLY':'*',
+    'DIVIDE':'/',
+    'EXPONENT':'^',
+    'MODULUS':'%'}
 boolops = ['=','>','<','>=','<=','!','&','|','$']
-expcommands = ['join','char']
+expcommands = {'char':'char'}
 scriptIndex = 0
 CustomErrors = []
 ArgOffset = 0
@@ -95,14 +106,6 @@ def evalExp(expression, runtime): #Evaluate expressions
         return exp
     except SyntaxError:
         return exp
-    
-    ex=[exp]
-    for x in order:
-        for y in ex:
-            ex[y] = ex[y].split(x)
-            #ex[y].insert(1, x)
-    print ex
-            
 
 def evalBool(expression, runtime):
     i = 0
@@ -161,11 +164,11 @@ def getCommand(n,script):
     C = ''
     AC = 0
     i = 0
-    while script[n][i] != '}':
+    while script[n][i] != spchars['SEP']:
         i = i+1
     C = script[n][:i]
     while i < len(script[n]):
-        while i < len(script[n]) and script[n][i] != '}':
+        while i < len(script[n]) and script[n][i] != spchars['SEP']:
             i = i+1
         AC = AC+1
         i = i+1
@@ -175,18 +178,18 @@ def getArg(n,C,runtime, raw=False):
     A = ''
     i = 0
     for x in range(n):
-        while C[i] != '}' and x != len(C):
+        while C[i] != spchars['SEP'] and x != len(C):
             i = i+1
         i = i+1
     i2 = i
-    while C[i] != '}' and i < len(C):
+    while C[i] != spchars['SEP'] and i < len(C):
         i = i+1
     A = C[i2:i]
     if raw == True:
         return A
-    if A[0] == '{':
+    if A[0] == spchars['OP']:
         A = evalExp(A[1:], runtime)
-    elif A[0] == '[':
+    elif A[0] == spchars['ALTOP']:
         A = evalBool(A[1:], runtime)
     return A
 
@@ -197,7 +200,7 @@ def run(script,rt=[],r=None):
     ret = ''
     runtime = rt
     i = 0
-    while getCommand(i,script)[0] != 'stop' and getCommand(i,script)[0] != 'debugsstop' and getCommand(i,script)[0] != 'passStop' and i != len(script):
+    while getCommand(i,script)[0] != commands['STOP'] and getCommand(i,script)[0] != commands['DEBUGSTOP'] and getCommand(i,script)[0] != 'passStop' and i != len(script):
         C = script[i]
         com = getCommand(i,script)[0]
         Args = []
@@ -205,16 +208,16 @@ def run(script,rt=[],r=None):
             Args = Args+[getArg(x,C,runtime)]
         ArgCount = getCommand(i,script)[1]-1
 
-        if com == commands['import']:
+        if com == commands['IMPORT']:
             runFile(Args[0])
         
-        elif com == commands['print']: #Print Statement
+        elif com == commands['PRINT']: #Print Statement
             o = ''
             for x in range(1, getCommand(i,script)[1]):
                o = o+str(getArg(x,C,runtime))
             print(o)
             
-        elif com == commands['var']: #Declare/set Variable
+        elif com == commands['VAR']: #Declare/set Variable
             if contains(runtime,'boo'+Args[0]):
                 scriptError('conflictingNameSpace',i)
             if contains(runtime,'var'+Args[0]):
@@ -229,7 +232,7 @@ def run(script,rt=[],r=None):
                 runtime.append('var'+Args[0])
                 runtime.append(o)
                 
-        elif com == 'bool': #Declare/set Boolean
+        elif com == commands['BOOL']: #Declare/set Boolean
             if contains(runtime,'var'+Args[0]):
                 scriptError('conflictingNameSpace',i)
             if contains(runtime,'boo'+Args[0]):
@@ -246,83 +249,83 @@ def run(script,rt=[],r=None):
             else:
                 scriptError('InvalidBool',i)
 
-        elif com == 'if': #Conditional
+        elif com == commands['IF']: #Conditional
             foundEnd = 0
             while foundEnd < 1:
                 i2 = i2+1
-                if getCommand(i2,script)[0] == 'endif':
+                if getCommand(i2,script)[0] == commands['ENDIF']:
                     foundEnd = foundEnd+1
-                elif getCommand(i2,script)[0] == 'if':
+                elif getCommand(i2,script)[0] == commands['IF']:
                     foundEnd = foundEnd-1
             if not Args[0] == '1':
                 i = i2
 
-        elif com == 'while': #Conditional Loop
+        elif com == commands['WHILE']: #Conditional Loop
             foundEnd = 0
             while foundEnd < 1:
                 i2 = i2+1
-                if getCommand(i2,script)[0] == 'endwhile':
+                if getCommand(i2,script)[0] == commands['ENDWHILE']:
                     foundEnd = foundEnd+1
-                elif getCommand(i2,script)[0] == 'while':
+                elif getCommand(i2,script)[0] == commands['WHILE']:
                     foundEnd = foundEnd-1
             if Args[0] == '1':
                 loopStarts[0].append(i)
             else:
                 i = i2
 
-        elif com == 'endwhile':
+        elif com == commands['ENDWHILE']:
             i = loopStarts[0][-1]-1
             loopStarts[0].pop(-1)
 
-        elif com == 'for': #For Loop
+        elif com == commands['FOR']: #For Loop
             pass
             
-        elif com == 'endfor':
+        elif com == commands['ENDFOR']:
             pass
 
-        elif com == 'func':
+        elif com == commands['FUNCTION']:
             i2 = i
             runtime.append('func'+getArg(1,C,runtime))
             runtime.append(C[5:])
             fArgs = []
-            while getCommand(i2,script)[0] != 'endfunc':
+            while getCommand(i2,script)[0] != commands['ENDFUNCTION']:
                 i2 = i2+1
             for x in range(1,ArgCount+1):
-                if getArg(x,C,runtime,True)[0] == '{':
+                if getArg(x,C,runtime,True)[0] == spchars['OP']:
                     fArgs.append('var'+getArg(x,C,runtime,True)[1:len(getArg(x,C,runtime,True))])
-                elif getArg(x,C,runtime,True)[0] == '[':
+                elif getArg(x,C,runtime,True)[0] == spchars['ALTOP']:
                     fArgs.append('boo'+getArg(x,C,True)[2:len(getArg(x,C,True))])
             print fArgs
             runtime.append(fArgs)
             runtime.append(script[i+1:i2])
             i = i2
             
-        elif com == 'expfunc':
+        elif com == commands['EXPFUNCTION']:
             i2 = i
             runtime.append('expfunc'+getArg(1,C,runtime))
             runtime.append(C[5:])
             fArgs = []
-            while getCommand(i2,script)[0] != 'endexpfunc':
+            while getCommand(i2,script)[0] != commands['ENDEXPFUNCTION']:
                 i2 = i2+1
             for x in range(1,ArgCount+1):
-                if getArg(x,C,runtime,True)[0] == '{':
+                if getArg(x,C,runtime,True)[0] == spchars['OP']:
                     fArgs.append('var'+getArg(x,C,runtime,True)[1:len(getArg(x,C,runtime,True))])
-                elif getArg(x,C,runtime,True)[0] == '[':
+                elif getArg(x,C,runtime,True)[0] == spchars['ALTOP']:
                     fArgs.append('boo'+getArg(x,C,True)[2:len(getArg(x,C,True))])
             print fArgs
             runtime.append(fArgs)
             runtime.append(script[i+1:i2])
             i = i2
 
-        elif com == 'endexpfunc':
+        elif com == commands['ENDEXPFUNC']:
             ret = getArg(1,C,True)
 
-        elif com == 'input': #Set a variable or boolean based on input
+        elif com == commands['INPUT']: #Set a variable or boolean based on input
             o = ''
             if contains(runtime,'var'+Args[0]):
                 for x in range(1, ArgCount):
                     o = o+str(Args[x])
-                runtime[runtime.index('var'+Args[0])+1] = getArg(1,'c}'+raw_input(o)+'}',runtime)
+                runtime[runtime.index('var'+Args[0])+1] = getArg(1,'c}'+raw_input(o)+spchars['SEP'],runtime)
             elif contains(runtime,'boo'+Args[0]):
                 for x in range(1, ArgCount):
                     o = o+str(Args[x])
@@ -330,7 +333,7 @@ def run(script,rt=[],r=None):
             else:
                 scriptError('namespaceNotFound',i)
 
-        elif com == 'rinput': #Set a variable based exactly on an input
+        elif com == commands['RINPUT']: #Set a variable based exactly on an input
             o = ''
             if contains(runtime,'var'+Args[0]):
                 for x in range(1, ArgCount):
@@ -339,14 +342,14 @@ def run(script,rt=[],r=None):
             else:
                 scriptError('namespaceNotFound',i)
     
-        elif com == 'list': #Make a List
+        elif com == commands['LIST']: #Make a List
             print('WIP')
             
-        elif com == 'stop': #Stops the Script
+        elif com == commands['STOP']: #Stops the Script
             runtime = []
             break
         
-        elif com == 'debugstop': #Stops the script, prints a message, and prints the runtime
+        elif com == commands['DEBUGSTOP']: #Stops the script, prints a message, and prints the runtime
             o = ''
             for x in range(1, getCommand(i,script)[1]):
                o = o+str(getArg(x,C,runtime))
@@ -380,15 +383,17 @@ def run(script,rt=[],r=None):
 
 def runFile(name,r=None):
     with open(name) as f:
-        program = f.read().splitlines()
+        program = f.read().replace('\n',';').split(';')
         program = [x for x in program if x]
         program = [x.replace('\t','') for x in program]
+        print 'progam: '+str(program)
     if r == None:
         run(program)
     else:
         return run(program,[],r)
 
 def openFile(r=None):
+    print 'Openning'
     if r == None:
         runFile(tkFileDialog.askopenfilename())
         return None
@@ -397,9 +402,10 @@ def openFile(r=None):
 
 ###########################################################################################
 mode = raw_input('Mode: ')
-if mode == 'open':
+if mode == 'o':
+    print 'mode==\'o\''
     openFile()
-elif mode == 'testfile':
+elif mode == 't':
     runFile("C:\Users\Nathan\Desktop\Programming\WalrusOS\WalTests\BoolTest.walrus")
-elif mode == 'builtintest':
+elif mode == 'b':
     run(['print}{5+2/3*9}','debugstop}'])
