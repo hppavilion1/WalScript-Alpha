@@ -42,10 +42,11 @@ scriptIndex = 0
 CustomErrors = []
 ArgOffset = 0
 order = '^*/%+-'
-defaultruntime = {'type':['var','bool','func'],
-                  'var':{},
+defaultruntime = {'var':{},
                   'bool':{},
-                  'func':{}
+                  'func':{},
+                  'class':{}
+                  'instance':{}
     }
 
 def contains(l, e): #find if list l contains element e
