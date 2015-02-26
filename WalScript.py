@@ -12,7 +12,11 @@ commands = {
     'WHILE':'while',
     'ENDWHILE':'endwhile',
     'FUNCTION':'func',
+    'FOR':'for',
+    'ENDFOR':'endfor',
     'ENDFUNCTION':'endfunc',
+    'EXPFUNCTION':'expfunction',
+    'ENDEXPFUNCTION':'endexpfunction',
     'STOP':'stop',
     'DEBUGSTOP':'debugstop'
     }
@@ -38,6 +42,11 @@ scriptIndex = 0
 CustomErrors = []
 ArgOffset = 0
 order = '^*/%+-'
+defaultruntime = {'type':['var','bool','func'],
+                  'var':{},
+                  'bool':{},
+                  'func':{}
+    }
 
 def contains(l, e): #find if list l contains element e
     r = 0
@@ -72,10 +81,8 @@ def evalExp(expression, runtime): #Evaluate expressions
         exp = evalBool(expression, runtime)
     while i < len(exp):
         if exp[i] == '#':
-            i2 = i+1
-            while exp[i2] != '#' and i2 < len(exp):
-                i2 = i2+1
-            exp = exp[:i]+runtime[runtime.index('var'+exp[i+1:i2])+1]+exp[i2+1:]
+            i2=exp.find('#',i+1)
+            exp = exp[:i]+runtime['var'][exp[i+1:i2]]+exp[i2+1:]
             i = -1
         i = i+1
 
@@ -196,7 +203,7 @@ def getArg(n,C,runtime, raw=False):
 def listify(o):
     return [x for x in o]
 
-def run(script,rt=[],r=None):
+def run(script,rt=defaultruntime,r=None):
     ret = ''
     runtime = rt
     i = 0
@@ -218,19 +225,11 @@ def run(script,rt=[],r=None):
             print(o)
             
         elif com == commands['VAR']: #Declare/set Variable
-            if contains(runtime,'boo'+Args[0]):
-                scriptError('conflictingNameSpace',i)
-            if contains(runtime,'var'+Args[0]):
-                o = ''
-                for x in range(2, getCommand(i,script)[1]):
-                    o = o+str(getArg(x,C,runtime))
-                runtime[runtime.index('var'+Args[0])+1]=o
-            else:
-                o = ''
-                for x in range(2, getCommand(i,script)[1]):
-                    o = o+str(getArg(x,C,runtime))
-                runtime.append('var'+Args[0])
-                runtime.append(o)
+            o = ''
+            for x in range(2, getCommand(i,script)[1]):
+                o = o+str(getArg(x,C,runtime))
+            runtime['var'][Args[0]]=o
+            print runtime
                 
         elif com == commands['BOOL']: #Declare/set Boolean
             if contains(runtime,'var'+Args[0]):
@@ -317,28 +316,28 @@ def run(script,rt=[],r=None):
             runtime.append(script[i+1:i2])
             i = i2
 
-        elif com == commands['ENDEXPFUNC']:
+        elif com == commands['ENDEXPFUNCTION']:
             ret = getArg(1,C,True)
 
         elif com == commands['INPUT']: #Set a variable or boolean based on input
             o = ''
-            if contains(runtime,'var'+Args[0]):
+            if Args[0] in runtime['var']:
                 for x in range(1, ArgCount):
                     o = o+str(Args[x])
-                runtime[runtime.index('var'+Args[0])+1] = getArg(1,'c}'+raw_input(o)+spchars['SEP'],runtime)
-            elif contains(runtime,'boo'+Args[0]):
+                runtime['var'][Args[0]] = getArg(1,'c'+spchars['SEP']+raw_input(o)+spchars['SEP'],runtime)
+            elif Args[0] in runtime['bool']:
                 for x in range(1, ArgCount):
                     o = o+str(Args[x])
-                runtime[runtime.index('boo'+Args[0])+1] = raw_input(o)
+                runtime['bool'][Args[0]] = getArg(1,'c'+spchars['SEP']+raw_input(o)+spchars['SEP'],runtime)
             else:
                 scriptError('namespaceNotFound',i)
 
         elif com == commands['RINPUT']: #Set a variable based exactly on an input
             o = ''
-            if contains(runtime,'var'+Args[0]):
+            if Args[0] in runtime['var']:
                 for x in range(1, ArgCount):
                     o = o+str(getArg(x,C,runtime,True))
-                runtime[runtime.index('var'+Args[0])+1] = raw_input(o)
+                runtime['var'][Args[0]] = raw_input(o)
             else:
                 scriptError('namespaceNotFound',i)
     
@@ -393,7 +392,6 @@ def runFile(name,r=None):
         return run(program,[],r)
 
 def openFile(r=None):
-    print 'Openning'
     if r == None:
         runFile(tkFileDialog.askopenfilename())
         return None
@@ -401,11 +399,11 @@ def openFile(r=None):
         return runFile(tkFileDialog.askopenfilename(),r)
 
 ###########################################################################################
-mode = raw_input('Mode: ')
-if mode == 'o':
-    print 'mode==\'o\''
-    openFile()
-elif mode == 't':
-    runFile("C:\Users\Nathan\Desktop\Programming\WalrusOS\WalTests\BoolTest.walrus")
-elif mode == 'b':
-    run(['print}{5+2/3*9}','debugstop}'])
+#mode = raw_input('Mode: ')
+#if mode == 'o':
+    #print 'mode==\'o\''
+openFile()
+#elif mode == 't':
+#    runFile("C:\Users\Nathan\Desktop\Programming\WalrusOS\WalTests\VarTest.walrus")
+#elif mode == 'b':
+#    run(['print}{5+2/3*9}','debugstop}'])
