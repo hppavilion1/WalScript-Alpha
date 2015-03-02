@@ -45,7 +45,8 @@ order = '^*/%+-'
 defaultruntime = {'var':{},
                   'bool':{},
                   'func':{},
-                  'class':{}
+                  'pyfunc':{},
+                  'class':{},
                   'instance':{}
     }
 
@@ -280,8 +281,6 @@ def run(script,rt=defaultruntime,r=None):
 
         elif com == commands['FUNCTION']:
             i2 = i
-            runtime.append('func'+getArg(1,C,runtime))
-            runtime.append(C[5:])
             fArgs = []
             while getCommand(i2,script)[0] != commands['ENDFUNCTION']:
                 i2 = i2+1
@@ -291,8 +290,7 @@ def run(script,rt=defaultruntime,r=None):
                 elif getArg(x,C,runtime,True)[0] == spchars['ALTOP']:
                     fArgs.append('boo'+getArg(x,C,True)[2:len(getArg(x,C,True))])
             print fArgs
-            runtime.append(fArgs)
-            runtime.append(script[i+1:i2])
+            runtime['func'][Args[0]]={'command':C[5:],'Args':fArgs,'script':script[i+1:i2]}
             i = i2
             
         elif com == commands['EXPFUNCTION']:
