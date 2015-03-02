@@ -3,6 +3,44 @@ import Tkinter as tk
 from Tkinter import Menu, BOTH, END, LEFT
 import tkFont, tkFileDialog, tkMessageBox
 
+class CustomText(tk.Text):
+    '''A text widget with a new method, highlight_pattern()
+
+    example:
+
+    text = CustomText()
+    text.tag_configure("red", foreground="#ff0000")
+    text.highlight_pattern("this should be red", "red")
+
+    The highlight_pattern method is a simplified python
+    version of the tcl code at http://wiki.tcl.tk/3246
+    '''
+    def __init__(self, *args, **kwargs):
+        tk.Text.__init__(self, *args, **kwargs)
+
+    def highlight_pattern(self, pattern, tag, start="1.0", end="end",
+                          regexp=True):
+        '''Apply the given tag to all text that matches the given pattern
+
+        If 'regexp' is set to True, pattern will be treated as a regular
+        expression.
+        '''
+
+        start = self.index(start)
+        end = self.index(end)
+        self.mark_set("matchStart", start)
+        self.mark_set("matchEnd", start)
+        self.mark_set("searchLimit", end)
+
+        count = tk.IntVar()
+        while True:
+            index = self.search(pattern, "matchEnd","searchLimit",
+                                count=count, regexp=regexp)
+            if index == "": break
+            self.mark_set("matchStart", index)
+            self.mark_set("matchEnd", "%s+%sc" % (index, count.get()))
+            self.tag_add(tag, "matchStart", "matchEnd")
+
 class App(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
@@ -11,7 +49,7 @@ class App(tk.Tk):
         self.toolbar = tk.Frame()
 
         text_frame = tk.Frame(borderwidth=1, relief='sunken')
-        self.text = tk.Text(wrap='none', bg='black', fg='white',
+        self.text = CustomText(wrap='none', bg='black', fg='white',
                             borderwidth=0, highlightthickness=0, insertbackground='#B6B6B4')
         self.vsb = tk.Scrollbar(orient='vertical', borderwidth=1,
                                 command=self.text.yview)
@@ -31,6 +69,7 @@ class App(tk.Tk):
         #Keybindings
         self.text.bind('<Key>', self.highlightCommands) #highlighting
         self.text.bind('}', self.highlightCommands2) #more highlighting
+        #self.text.bind('}', self.highlight) #more highlighting
             #Menu functions
         self.bind('<Control-c>', self.copy_command) 
         self.bind('<Control-x>', self.cut_command)
@@ -150,7 +189,7 @@ class App(tk.Tk):
         print test+' button functional'
 
     def highlightCommands(self, event):
-        index = self.text.search('}', 'insert', backwards=True)
+        index = self.search('}', 'insert', backwards=True)
         if index == '':
             index ='1.0'
         else:
@@ -158,17 +197,18 @@ class App(tk.Tk):
         command = self.text.get(index, 'insert')
         self.text.tag_remove('command', index, '%s+%dc' % (index, len(command)))
         self.text.tag_remove('unrecognizedCommand', index, '%s+%dc' % (index, len(command)))
+        print command
         if command in self._commands:
             self.text.tag_add('command', index, '%s+%dc' % (index, len(command)))
 
     def highlightCommands2(self, event):
-        index = self.text.search('}', 'insert', backwards=True, regexp=True)
+        index = self.search('}', 'insert', backwards=True)
         if index == '':
             index ='0.0'
         else:
             index = self.text.index('%s+1c' % index)
         command = self.text.get(index, 'insert')
-        if not command in self._commands:
+        if not command[0:] in self._commands:
             self.text.tag_add('unrecognizedCommand', index, '%s+%dc' % (index, len(command)))
 
     def search(self, keyword, tag):

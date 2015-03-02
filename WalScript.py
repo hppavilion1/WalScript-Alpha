@@ -64,7 +64,12 @@ def find_nth(haystack, needle, n): #Find the nth occurence of needle in haystack
     return start
 
 def scriptError(errorType, line=0): #Handle errors in the script
-    errors = [['conflictingNamespace','A conflicting namespace was used'],['namespaceNotFound','An undefined namespace was used'],['divideByZero','You cannot divide by zero'],['assertionError','An assertion failed'],['invalidErrorCode','An invalid error was encountered'],['invalidBool','A boolean with an invalid value was encountered']]+CustomErrors #Script errors
+    errors = [['conflictingNamespace','A conflicting namespace was used'],
+              ['namespaceNotFound','An undefined namespace was used'],
+              ['divideByZero','You cannot divide by zero'],
+              ['assertionError','An assertion failed'],
+              ['invalidErrorCode','An invalid error was encountered'],
+              ['invalidBool','A boolean with an invalid value was encountered']]+CustomErrors #Script errors
     validError = False
     for x in errors:
         if x[0] == errorType:
@@ -124,7 +129,7 @@ def evalBool(expression, runtime):
             while exp[i2] != '$' and i2 < len(exp):
                 i2 = i2+1
             #i2 = i2+1
-            exp = exp[:i]+runtime[runtime.index('bool'+exp[i+1:i2])+1]+exp[i2+1:]
+            exp = exp[:i]+runtime['bool'][exp[i+1:i2]]+exp[i2+1:]
             i = -1
         i = i+1
     while '!' in exp:
@@ -226,28 +231,18 @@ def run(script,rt=defaultruntime,r=None):
             print(o)
             
         elif com == commands['VAR']: #Declare/set Variable
-            o = ''
-            for x in range(2, getCommand(i,script)[1]):
-                o = o+str(getArg(x,C,runtime))
-            runtime['var'][Args[0]]=o
+            if Args[1] == 't':
+                runtime['bool'][Args[0]] = not runtime['bool'][Args[0]]
+            else:
+                runtime['bool'][Args[0]] = Args[1]
             print runtime
                 
         elif com == commands['BOOL']: #Declare/set Boolean
-            if contains(runtime,'var'+Args[0]):
-                scriptError('conflictingNameSpace',i)
-            if contains(runtime,'boo'+Args[0]):
-                b = Args[1]
-                if b == 't':
-                    if b == '1':
-                        b = '0'
-                    else:
-                        b = '1'
-                runtime[runtime.index('boo'+Args[0])+1]=str(b)
-            elif Args[1] == '1' or Args[1] == '0':
-                runtime.append('boo'+Args[0])
-                runtime.append(str(Args[1]))
-            else:
-                scriptError('InvalidBool',i)
+            o = ''
+            for x in range(2, getCommand(i,script)[1]):
+                o = o+str(getArg(x,C,runtime))
+            runtime['bool'][Args[0]]=o
+            print runtime
 
         elif com == commands['IF']: #Conditional
             foundEnd = 0
