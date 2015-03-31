@@ -375,8 +375,6 @@ def runFile(name,r=None):
         program = program.split(';')
         program = [x for x in program if x]
         program = [x.strip() for x in program]
-        for x in program:
-            print(x)
     if r == None:
         run(program)
     else:
