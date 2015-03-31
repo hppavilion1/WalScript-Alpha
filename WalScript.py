@@ -27,7 +27,7 @@ spchars = {
     }
 root = Tkinter.Tk()
 root.withdraw()
-loopStarts = []
+loopStarts = [[],[]]
 out = []
 operations = {
     'PLUS':'+',
@@ -235,14 +235,12 @@ def run(script,rt=defaultruntime,r=None):
                 runtime['bool'][Args[0]] = not runtime['bool'][Args[0]]
             else:
                 runtime['bool'][Args[0]] = Args[1]
-            print runtime
                 
         elif com == commands['BOOL']: #Declare/set Boolean
             o = ''
             for x in range(2, getCommand(i,script)[1]):
                 o = o+str(getArg(x,C,runtime))
             runtime['bool'][Args[0]]=o
-            print runtime
 
         elif com == commands['IF']: #Conditional
             foundEnd = 0
@@ -263,7 +261,7 @@ def run(script,rt=defaultruntime,r=None):
                     foundEnd = foundEnd+1
                 elif getCommand(i2,script)[0] == commands['WHILE']:
                     foundEnd = foundEnd-1
-            if Args[0] == '1':
+            if str(Args[0]) == '1':
                 loopStarts[0].append(i)
             else:
                 i = i2
@@ -288,7 +286,6 @@ def run(script,rt=defaultruntime,r=None):
                     fArgs.append('var'+getArg(x,C,runtime,True)[1:len(getArg(x,C,runtime,True))])
                 elif getArg(x,C,runtime,True)[0] == spchars['ALTOP']:
                     fArgs.append('boo'+getArg(x,C,True)[2:len(getArg(x,C,True))])
-            print fArgs
             runtime['func'][Args[0]]={'command':C[5:],'Args':fArgs,'script':script[i+1:i2]}
             i = i2
             
@@ -304,7 +301,6 @@ def run(script,rt=defaultruntime,r=None):
                     fArgs.append('var'+getArg(x,C,runtime,True)[1:len(getArg(x,C,runtime,True))])
                 elif getArg(x,C,runtime,True)[0] == spchars['ALTOP']:
                     fArgs.append('boo'+getArg(x,C,True)[2:len(getArg(x,C,True))])
-            print fArgs
             runtime.append(fArgs)
             runtime.append(script[i+1:i2])
             i = i2
@@ -375,10 +371,12 @@ def run(script,rt=defaultruntime,r=None):
 
 def runFile(name,r=None):
     with open(name) as f:
-        program = f.read().replace('\n',';').split(';')
+        program = f.read().replace('\n',';').replace(';;',';')
+        program = program.split(';')
         program = [x for x in program if x]
-        program = [x.replace('\t','') for x in program]
-        print 'progam: '+str(program)
+        program = [x.strip() for x in program]
+        for x in program:
+            print(x)
     if r == None:
         run(program)
     else:

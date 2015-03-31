@@ -1,5 +1,5 @@
-var}foo}walrus}
-for}x}{#foo#}
-print}#x}
+var}foo}walrus};
+for}x}{#foo#};
+	print}#x#};
 endfor}
-stop}
+stop};

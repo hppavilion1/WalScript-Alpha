@@ -1,3 +1,3 @@
-print}{join(walrus, apocalypse)}
-print}{char(2,walrus)}
-stop}
+print}{join(walrus, apocalypse)};
+print}{char(2,walrus)};
+stop};

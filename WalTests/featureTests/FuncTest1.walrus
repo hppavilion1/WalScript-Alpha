@@ -1,6 +1,6 @@
-func}hw}
-print}hello, world!}
-endfunc}
+func}hw};
+	print}hello, world!};
+endfunc};
 
-hw}
-stop}
+hw};
+stop};

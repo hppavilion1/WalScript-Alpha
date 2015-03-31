@@ -1,18 +1,18 @@
-print}This script will ask for inputs for Bar and Baz, print "Foo", and if you input 1 for bar print bar and if you input 1 for baz (after 1 for bar) it prints "And baz"}
-bool}foo}1}
-bool}bar}0}
-bool}baz}0}
-print}foo=}{$foo$}
-print}bar=}{$bar$}
-input}bar}Bar: }
-input}baz}Baz: }
-if}{$foo$}
-	print}foo}
-endif}
-if}{$bar$}
-	print}bar}
-	if}{$baz$}
-		print}and baz}
-	endif}
-endif}
-stop}
+print}This script will ask for inputs for Bar and Baz, print "Foo", and if you input 1 for bar print bar and if you input 1 for baz (after 1 for bar) it prints "And baz"};
+bool}foo}1};
+bool}bar}0};
+bool}baz}0};
+print}foo=}{$foo$};
+print}bar=}{$bar$};
+input}bar}Bar: };
+input}baz}Baz: };
+if}{$foo$};
+	print}foo};
+endif};
+if}{$bar$};
+	print}bar};
+	if}{$baz$};
+		print}and baz};
+	endif};
+endif};
+stop};
