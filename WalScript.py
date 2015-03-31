@@ -65,17 +65,16 @@ def find_nth(haystack, needle, n): #Find the nth occurence of needle in haystack
     return start
 
 def scriptError(errorType, line=0): #Handle errors in the script
-    errors = [['conflictingNamespace','A conflicting namespace was used'],
-              ['namespaceNotFound','An undefined namespace was used'],
-              ['divideByZero','You cannot divide by zero'],
-              ['assertionError','An assertion failed'],
-              ['invalidErrorCode','An invalid error was encountered'],
-              ['invalidBool','A boolean with an invalid value was encountered']]+CustomErrors #Script errors
+    errors = {'conflictingNamespace':'A conflicting namespace was used',
+              'namespaceNotFound':'An undefined namespace was used',
+              'divideByZero':'You cannot divide by zero',
+              'assertionError':'An assertion failed',
+              'invalidErrorCode':'An invalid error was encountered',
+              'invalidBool':'A boolean with an invalid value was encountered'
+              }+CustomErrors #Script errors
     validError = False
-    for x in errors:
-        if x[0] == errorType:
-            validError = True
-            break
+    if errorType in errors:
+        validError=True
     if not validError:
         scriptError('InvalidErrorCode', line)
     print('WalScript Error: '+errorType+' in line '+str(line))
