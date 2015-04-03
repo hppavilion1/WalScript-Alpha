@@ -1,13 +1,17 @@
 print}This script should print looping as long as you input "1" every time it asks if you should continue};
+
 bool}loop}1};
+
 while}{$loop$};
 	print}Looping};
 	input}loop}Continue?: };
 	bool}loop2}0};
 	input}loop2}meta-loop?: };
+
 	while}{$loop2$};
 		print}Meta-looping};
-	input}loop2}meta-loop?: };
+		input}loop2}meta-loop?: };
 	endwhile};
+
 endwhile};
 stop};

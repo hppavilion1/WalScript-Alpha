@@ -1,4 +1,5 @@
+print}prints "hi, 3"};
 var}foo}hi};
 import}C:\Users\Nathan\Desktop\Programming\Python\WalrusOS\WalScript\WalScriptPy\Lib\math.walrus};
-print}{#foo#},}{#pi#};
+print}{#foo#}, }{#pi#};
 passStop};

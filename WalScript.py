@@ -6,6 +6,7 @@ commands = {
     'BOOL':'bool',
     'INPUT':'input',
     'RINPUT':'rinput',
+    'LIST':'list',
     'HOLD':'hold',
     'IF':'if',
     'ENDIF':'endif',
@@ -286,7 +287,11 @@ def run(script,rt=defaultruntime,r=None):
                     fArgs.append('var'+getArg(x,C,runtime,True)[1:len(getArg(x,C,runtime,True))])
                 elif getArg(x,C,runtime,True)[0] == spchars['ALTOP']:
                     fArgs.append('boo'+getArg(x,C,True)[2:len(getArg(x,C,True))])
-            runtime['func'][Args[0]]={'command':C[5:],'Args':fArgs,'script':script[i+1:i2]}
+            runtime['func'][Args[0]]={
+                'command':C[5:],
+                'Args':fArgs,
+                'script':script[i+1:i2]
+                                      }
             i = i2
             
         elif com == commands['EXPFUNCTION']:
@@ -349,13 +354,8 @@ def run(script,rt=defaultruntime,r=None):
             runtime = []
             break
         
-        elif contains(runtime, 'func'+getCommand(i,script)[0]):
-            rti = runtime.index('func'+getCommand(i,script)[0])
-            fArgs = []
-            for x in range(ArgCount):
-                fArgs.append(runtime[rti+2][x])
-                fArgs.append(getArg(x+1,C,runtime))
-            runtime = run(runtime[rti+3], runtime+fArgs, 'runtime')
+        elif com in runtime['func']:
+            run(runtime['func'][com])
         i = i+1
         i2 = i
             
@@ -371,7 +371,7 @@ def run(script,rt=defaultruntime,r=None):
 
 def runFile(name,r=None):
     with open(name) as f:
-        program = f.read().replace('\n',';').replace(';;',';')
+        program = f.read().replace('/n',';').replace(';;',';')
         program = program.split(';')
         program = [x for x in program if x]
         program = [x.strip() for x in program]
@@ -387,12 +387,29 @@ def openFile(r=None):
     else:
         return runFile(tkFileDialog.askopenfilename(),r)
 
-###########################################################################################
+##########################################################################################################################################################################
 #mode = raw_input('Mode: ')
 #if mode == 'o':
     #print 'mode==\'o\''
-openFile()
+if raw_input('Test All?: ')=='Y':
+    runFile('C:/Users/Nathan/Desktop/Programming/Python/WalrusOS/WalScript/WalScriptPy/WalTests/featureTests/BoolTest.walrus')
+    print('\n\n')
+    #runFile('C:/Users/Nathan/Desktop/Programming/Python/WalrusOS/WalScript/WalScriptPy/WalTests/featureTests/expcommand.walrus')
+    #print('\n\n')
+    #runFile('C:/Users/Nathan/Desktop/Programming/Python/WalrusOS/WalScript/WalScriptPy/WalTests/featureTests/ForLoopTest.walrus')
+    #print('\n\n')
+    runFile('C:/Users/Nathan/Desktop/Programming/Python/WalrusOS/WalScript/WalScriptPy/WalTests/featureTests/FuncTest1.walrus')
+    print('\n\n')
+    runFile('C:/Users/Nathan/Desktop/Programming/Python/WalrusOS/WalScript/WalScriptPy/WalTests/featureTests/FuncTest2.walrus')
+    print('\n\n')
+    runFile('C:/Users/Nathan/Desktop/Programming/Python/WalrusOS/WalScript/WalScriptPy/WalTests/featureTests/ImportTest.walrus')
+    print('\n\n')
+    runFile('C:/Users/Nathan/Desktop/Programming/Python/WalrusOS/WalScript/WalScriptPy/WalTests/featureTests/VarTest.walrus')
+    print('\n\n')
+    runFile('C:/Users/Nathan/Desktop/Programming/Python/WalrusOS/WalScript/WalScriptPy/WalTests/featureTests/WhileLoopTest.walrus')
+else:
+    openFile()
 #elif mode == 't':
-#    runFile("C:\Users\Nathan\Desktop\Programming\WalrusOS\WalTests\VarTest.walrus")
+#    runFile('C:/Users/Nathan/Desktop/Programming/WalrusOS/WalTests/VarTest.walrus')
 #elif mode == 'b':
 #    run(['print}{5+2/3*9}','debugstop}'])

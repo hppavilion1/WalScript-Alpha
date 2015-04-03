@@ -1,3 +1,4 @@
+print}Asks for a name then sings happy birthday to the person given};
 func}birthday}{name};
 	print}Happy birthday to you};
 	print}Happy birthday to you};

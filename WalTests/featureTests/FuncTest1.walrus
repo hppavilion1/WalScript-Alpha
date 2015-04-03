@@ -1,3 +1,4 @@
+print}Prints "hello, world!"};
 func}hw};
 	print}hello, world!};
 endfunc};
