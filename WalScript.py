@@ -16,8 +16,8 @@ commands = {
     'FOR':'for',
     'ENDFOR':'endfor',
     'ENDFUNCTION':'endfunc',
-    'EXPFUNCTION':'expfunction',
-    'ENDEXPFUNCTION':'endexpfunction',
+    'EXPFUNCTION':'expfunc',
+    'ENDEXPFUNCTION':'endexpfunc',
     'STOP':'stop',
     'DEBUGSTOP':'debugstop'
     }
